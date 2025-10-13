@@ -21,7 +21,7 @@ class CommunityToolsApp extends StatelessWidget {
         theme: AppThemes.lightTheme,
         darkTheme: AppThemes.darkTheme,
         themeMode: ThemeMode.light,
-        initialRoute: AppRoutes.splash,
+        initialRoute: AppRoutes.home,
         routes: AppRoutes.routes,
       ),
     );
