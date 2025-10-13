@@ -1,7 +1,8 @@
+import 'package:community_tools_sharing/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomSearchBar extends StatelessWidget {
-  const CustomSearchBar({Key? key}) : super(key: key);
+  const CustomSearchBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -10,7 +11,7 @@ class CustomSearchBar extends StatelessWidget {
         prefixIcon: const Icon(Icons.search),
         hintText: 'Search',
         filled: true,
-        fillColor: Colors.grey.shade100,
+        fillColor: AppColors.lightBlue,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,

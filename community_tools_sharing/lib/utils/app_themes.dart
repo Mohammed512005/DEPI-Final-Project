@@ -9,6 +9,10 @@ class AppThemes {
       backgroundColor: AppColors.primary,
       foregroundColor: Colors.white,
     ),
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      backgroundColor: AppColors.white,
+      
+    ),
     textTheme: const TextTheme(
       bodyMedium: TextStyle(color: AppColors.text),
     ),

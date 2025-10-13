@@ -37,11 +37,13 @@ class NearbyItemCard extends StatelessWidget {
           children: [
             Expanded(
               child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(12),
+                ),
                 child: Container(
                   color: Colors.grey.shade200,
                   child: Center(
-                    child: Text('TODO: Add Image Here'),
+                    child: Image(image: AssetImage(image), fit: BoxFit.cover),
                   ),
                 ),
               ),
@@ -51,9 +53,15 @@ class NearbyItemCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
+                  Text(
+                    title,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
                   const SizedBox(height: 4),
-                  Text('$price • $distance', style: TextStyle(color: Colors.grey[600], fontSize: 12)),
+                  Text(
+                    '$price • $distance',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                  ),
                 ],
               ),
             ),

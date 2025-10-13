@@ -1,6 +1,7 @@
 import 'package:community_tools_sharing/ui/widgets/category_chip.dart';
 import 'package:community_tools_sharing/ui/widgets/nearby_item_card.dart';
 import 'package:community_tools_sharing/ui/widgets/search_bar.dart';
+import 'package:community_tools_sharing/utils/app_assets.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -18,25 +19,25 @@ class HomeScreen extends StatelessWidget {
       'title': 'Lawn Mower',
       'price': '\$10/day',
       'distance': '1.2 miles',
-      'image': 'TODO: add image here'
+      'image': AppAssets.homeImage1,
     },
     {
       'title': 'Drill',
       'price': 'Free',
       'distance': '0.8 miles',
-      'image': 'TODO: add image here'
+      'image': AppAssets.homeImage2,
     },
     {
       'title': 'Blender',
       'price': '\$5/day',
       'distance': '2.5 miles',
-      'image': 'TODO: add image here'
+      'image': AppAssets.homeImage3,
     },
     {
       'title': 'Saw',
       'price': '\$15/day',
       'distance': '1.5 miles',
-      'image': 'TODO: add image here'
+      'image': AppAssets.homeImage4,
     },
   ];
 
@@ -52,9 +53,17 @@ class HomeScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Tool Share',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                const SizedBox(width: 30),
+                Expanded(
+                  child: Center(
+                    child: const Text(
+                      'ConnecTools',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
                 IconButton(
                   onPressed: () {
