@@ -20,14 +20,12 @@ class AppRoutes {
 
   static final Map<String, WidgetBuilder> routes = {
     splash: (context) => const SplashScreen(),
-    login: (context) => const LoginScreen(),
     home: (context) => const MainLayout(),
     browse: (context) => const BrowseScreen(),
     addTool: (context) => const AddToolScreen(),
     bookings: (context) => const BookingScreen(),
     profile: (context) => const ProfileScreen(),
     login: (context) => const SignInScreen(),
-    home: (context) => const HomeScreen(),
     register: (context) => const SignUpScreen(),
   };
 }
