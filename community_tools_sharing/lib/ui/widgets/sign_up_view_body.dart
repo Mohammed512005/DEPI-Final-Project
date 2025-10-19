@@ -199,7 +199,7 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
                 onPressed: () {
                   // TODO: Add register logic
                   if (_agreeToTerms) {
-                    Navigator.pushReplacementNamed(context, AppRoutes.home);
+                    Navigator.pushReplacementNamed(context, AppRoutes.login);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -224,7 +224,7 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, AppRoutes.login);
+                      Navigator.pushReplacementNamed(context, AppRoutes.login);
                     },
                     child: Text(
                       'Sign In',

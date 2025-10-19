@@ -1,3 +1,4 @@
+import 'package:community_tools_sharing/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 
 class NearbyItemCard extends StatelessWidget {
@@ -18,7 +19,7 @@ class NearbyItemCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // TODO: navigate to item details screen
+        Navigator.pushNamed(context, AppRoutes.toolDetails);
       },
       child: Container(
         decoration: BoxDecoration(

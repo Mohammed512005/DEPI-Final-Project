@@ -2,6 +2,7 @@ import 'package:community_tools_sharing/ui/widgets/category_chip.dart';
 import 'package:community_tools_sharing/ui/widgets/nearby_item_card.dart';
 import 'package:community_tools_sharing/ui/widgets/search_bar.dart';
 import 'package:community_tools_sharing/utils/app_assets.dart';
+import 'package:community_tools_sharing/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -85,7 +86,7 @@ class HomeScreen extends StatelessWidget {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: categories.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 8),
+                separatorBuilder: (_, _) => const SizedBox(width: 8),
                 itemBuilder: (context, index) {
                   return CategoryChip(label: categories[index]);
                 },

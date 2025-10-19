@@ -135,7 +135,7 @@ class _SignInViewBodyState extends State<SignInViewBody> {
                 text: 'Sign In',
                 onPressed: () {
                   // TODO: Add login logic (Firebase/Auth API)
-                  Navigator.pushReplacementNamed(context, AppRoutes.home);
+                  Navigator.pushNamed(context, AppRoutes.mailVerification);
                 },
               ),
               SizedBox(height: size.height * 0.03),

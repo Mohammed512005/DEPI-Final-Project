@@ -23,4 +23,9 @@ abstract final class AppStyle {
     fontSize: 14,
     fontWeight: FontWeight.w400,
   );
+  static const TextStyle mainTextStyle = TextStyle(
+    color: AppColors.black,
+    fontSize: 18,
+    fontWeight: FontWeight.w700,
+  );
 }
