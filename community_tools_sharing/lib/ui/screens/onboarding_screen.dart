@@ -1,3 +1,4 @@
+import 'package:community_tools_sharing/services/local_storage_service.dart';
 import 'package:community_tools_sharing/utils/app_assets.dart';
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
@@ -37,7 +38,11 @@ class OnboardingView extends StatelessWidget {
         "Skip",
         style: TextStyle(color: Color(0xFF6C757D), fontWeight: FontWeight.w500),
       ),
-      onSkip: () => Navigator.pushReplacementNamed(context, AppRoutes.login),
+      onSkip: () async {
+        await LocalStorageService.setOnboardingShown(true);
+        if (!context.mounted) return;
+        Navigator.pushReplacementNamed(context, AppRoutes.login);
+      },
       next: const Text(
         "Next",
         style: TextStyle(color: Color(0xFF1E88E5), fontWeight: FontWeight.w600),
@@ -46,7 +51,9 @@ class OnboardingView extends StatelessWidget {
         "Done",
         style: TextStyle(color: Color(0xFF1E88E5), fontWeight: FontWeight.w600),
       ),
-      onDone: () {
+      onDone: () async {
+        await LocalStorageService.setOnboardingShown(true);
+        if (!context.mounted) return;
         Navigator.pushReplacementNamed(context, AppRoutes.login);
       },
       dotsDecorator: DotsDecorator(

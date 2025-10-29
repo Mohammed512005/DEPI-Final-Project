@@ -1,4 +1,6 @@
+import 'package:community_tools_sharing/services/local_storage_service.dart';
 import 'package:flutter/material.dart';
+import 'package:community_tools_sharing/services/auth_service.dart';
 import 'package:community_tools_sharing/ui/widgets/custom_button.dart';
 import 'package:community_tools_sharing/ui/widgets/custom_text_field.dart';
 import 'package:community_tools_sharing/utils/app_routes.dart';
@@ -14,13 +16,48 @@ class SignInViewBody extends StatefulWidget {
 class _SignInViewBodyState extends State<SignInViewBody> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final AuthService _authService = AuthService();
+
   bool _obscurePassword = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _signIn() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all fields')),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    final result = await _authService.login(email, password);
+
+    setState(() => _isLoading = false);
+
+    if (result == 'success') {
+      await LocalStorageService.setLoggedIn(true);
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Login successful!')));
+      Navigator.pushReplacementNamed(context, AppRoutes.home);
+    } else {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(result ?? 'Login failed')));
+    }
   }
 
   @override
@@ -50,14 +87,12 @@ class _SignInViewBodyState extends State<SignInViewBody> {
                       color: Colors.deepPurple,
                     ),
                     const SizedBox(height: 10),
-                    Text(
+                    const Text(
                       'Welcome Back 👋',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.w700,
-                        color: Color(
-                          0xFF1E1E1E,
-                        ), // dark gray/black for modern look
+                        color: Color(0xFF1E1E1E),
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -84,7 +119,6 @@ class _SignInViewBodyState extends State<SignInViewBody> {
                   Icons.email_outlined,
                   color: Colors.grey.shade600,
                 ),
-                // TODO: Add email validation logic
               ),
               const SizedBox(height: 20),
 
@@ -107,7 +141,6 @@ class _SignInViewBodyState extends State<SignInViewBody> {
                     setState(() => _obscurePassword = !_obscurePassword);
                   },
                 ),
-                // TODO: Add password validation logic
               ),
 
               SizedBox(height: size.height * 0.01),
@@ -117,7 +150,7 @@ class _SignInViewBodyState extends State<SignInViewBody> {
                 alignment: Alignment.centerRight,
                 child: GestureDetector(
                   onTap: () {
-                    // TODO: Add "Forgot Password" screen navigation
+                    // TODO: Add forgot password screen
                   },
                   child: Text(
                     'Forgot Password?',
@@ -131,13 +164,10 @@ class _SignInViewBodyState extends State<SignInViewBody> {
               SizedBox(height: size.height * 0.04),
 
               // ---------- Sign In Button ----------
-              CustomButton(
-                text: 'Sign In',
-                onPressed: () {
-                  // TODO: Add login logic (Firebase/Auth API)
-                  Navigator.pushNamed(context, AppRoutes.mailVerification);
-                },
-              ),
+              _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : CustomButton(text: 'Sign In', onPressed: _signIn),
+
               SizedBox(height: size.height * 0.03),
 
               // ---------- Divider ----------

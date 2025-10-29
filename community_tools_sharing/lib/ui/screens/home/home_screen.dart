@@ -2,7 +2,6 @@ import 'package:community_tools_sharing/ui/widgets/category_chip.dart';
 import 'package:community_tools_sharing/ui/widgets/nearby_item_card.dart';
 import 'package:community_tools_sharing/ui/widgets/search_bar.dart';
 import 'package:community_tools_sharing/utils/app_assets.dart';
-import 'package:community_tools_sharing/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {

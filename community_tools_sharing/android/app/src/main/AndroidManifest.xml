@@ -3,6 +3,10 @@
         android:label="community_tools_sharing"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyD8sfOw8pMudOe2AT_JlQw6ws1KxYzZ5ts" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:community_tools_sharing/services/auth_service.dart';
 import 'package:community_tools_sharing/ui/widgets/custom_button.dart';
 import 'package:community_tools_sharing/ui/widgets/custom_text_field.dart';
 import 'package:community_tools_sharing/utils/app_routes.dart';
@@ -18,9 +19,12 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
       TextEditingController();
   final TextEditingController _nationalIdController = TextEditingController();
 
+  final AuthService _authService = AuthService();
+
   bool _obscurePassword = true;
   bool _obscureConfirm = true;
   bool _agreeToTerms = false;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -29,6 +33,67 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
     _confirmPasswordController.dispose();
     _nationalIdController.dispose();
     super.dispose();
+  }
+
+  Future<void> _signUp() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
+    final nationalId = _nationalIdController.text.trim();
+
+    if (email.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty ||
+        nationalId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all fields')),
+      );
+      return;
+    }
+
+    if (!_agreeToTerms) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please agree to the Terms & Conditions first'),
+        ),
+      );
+      return;
+    }
+
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Passwords do not match')));
+      return;
+    }
+
+    if (nationalId.length != 14) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('National ID must be 14 digits')),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    final result = await _authService.register(email, password, nationalId: nationalId);
+
+    setState(() => _isLoading = false);
+
+    if (mounted) {
+      if (result == 'success') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Account created successfully!')),
+        );
+
+        // Navigate to login or verification screen
+        Navigator.pushReplacementNamed(context, AppRoutes.mailVerification);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result ?? 'Registration failed')),
+        );
+      }
+    }
   }
 
   @override
@@ -57,14 +122,12 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
                       color: Colors.deepPurple,
                     ),
                     const SizedBox(height: 10),
-                    Text(
+                    const Text(
                       'Create Account ✨',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.w700,
-                        color: Color(
-                          0xFF1E1E1E,
-                        ), // dark gray/black for modern look
+                        color: Color(0xFF1E1E1E),
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -91,7 +154,6 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
                   Icons.email_outlined,
                   color: Colors.grey.shade600,
                 ),
-                // TODO: Add email validation
               ),
               const SizedBox(height: 16),
 
@@ -110,11 +172,9 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
                     _obscurePassword ? Icons.visibility_off : Icons.visibility,
                     color: Colors.grey.shade600,
                   ),
-                  onPressed: () {
-                    setState(() => _obscurePassword = !_obscurePassword);
-                  },
+                  onPressed: () =>
+                      setState(() => _obscurePassword = !_obscurePassword),
                 ),
-                // TODO: Add password validation
               ),
               const SizedBox(height: 16),
 
@@ -133,11 +193,9 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
                     _obscureConfirm ? Icons.visibility_off : Icons.visibility,
                     color: Colors.grey.shade600,
                   ),
-                  onPressed: () {
-                    setState(() => _obscureConfirm = !_obscureConfirm);
-                  },
+                  onPressed: () =>
+                      setState(() => _obscureConfirm = !_obscureConfirm),
                 ),
-                // TODO: Validate matching passwords
               ),
               const SizedBox(height: 16),
 
@@ -150,7 +208,6 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
                   Icons.badge_outlined,
                   color: Colors.grey.shade600,
                 ),
-                // TODO: Validate ID format
               ),
 
               SizedBox(height: size.height * 0.03),
@@ -162,11 +219,8 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
                   Checkbox(
                     value: _agreeToTerms,
                     activeColor: Colors.deepPurple,
-                    onChanged: (value) {
-                      setState(() {
-                        _agreeToTerms = value ?? false;
-                      });
-                    },
+                    onChanged: (value) =>
+                        setState(() => _agreeToTerms = value ?? false),
                   ),
                   Expanded(
                     child: Text.rich(
@@ -182,7 +236,6 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
                               color: Colors.deepPurple,
                               fontWeight: FontWeight.w600,
                             ),
-                            // TODO: Navigate to T&C page
                           ),
                         ],
                       ),
@@ -194,23 +247,9 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
               SizedBox(height: size.height * 0.03),
 
               // ---------- Sign Up Button ----------
-              CustomButton(
-                text: "Sign Up",
-                onPressed: () {
-                  // TODO: Add register logic
-                  if (_agreeToTerms) {
-                    Navigator.pushReplacementNamed(context, AppRoutes.login);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Please agree to the Terms & Conditions first',
-                        ),
-                      ),
-                    );
-                  }
-                },
-              ),
+              _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : CustomButton(text: "Sign Up", onPressed: _signUp),
 
               SizedBox(height: size.height * 0.05),
 
@@ -223,9 +262,10 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
                     style: AppStyle.kSecondaryTextStyle,
                   ),
                   GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacementNamed(context, AppRoutes.login);
-                    },
+                    onTap: () => Navigator.pushReplacementNamed(
+                      context,
+                      AppRoutes.login,
+                    ),
                     child: Text(
                       'Sign In',
                       style: AppStyle.kSecondaryTextStyle.copyWith(
@@ -236,7 +276,6 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
                   ),
                 ],
               ),
-
               SizedBox(height: size.height * 0.05),
             ],
           ),

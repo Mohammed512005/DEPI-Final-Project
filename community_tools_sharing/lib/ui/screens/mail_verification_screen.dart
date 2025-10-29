@@ -1,3 +1,4 @@
+import 'package:community_tools_sharing/services/local_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:community_tools_sharing/utils/app_routes.dart';
@@ -137,9 +138,10 @@ class _MailVerificationScreenState extends State<MailVerificationScreen> {
                             onPressed: () {
                               final code = codeController.text.trim();
                               if (code.length == 6) {
+                                LocalStorageService.setLoggedIn(true);
                                 Navigator.pushReplacementNamed(
                                   context,
-                                  AppRoutes.home,
+                                  AppRoutes.login,
                                 );
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(

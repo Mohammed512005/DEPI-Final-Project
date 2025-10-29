@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "426222909305",
+    "project_id": "connectools-f1494",
+    "storage_bucket": "connectools-f1494.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:426222909305:android:c7b92c825318dd1feae1a8",
+        "android_client_info": {
+          "package_name": "com.example.community_tools_sharing"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzz7TtpEif7Jfg-mWa0M4NzslbUYtPmZI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,3 +1,4 @@
+import 'package:community_tools_sharing/services/local_storage_service.dart';
 import 'package:community_tools_sharing/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import '../../utils/app_routes.dart';
@@ -14,11 +15,25 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 1), () {
-      if (mounted) {
-        Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
-      }
-    });
+    _navigate();
+  }
+
+  Future<void> _navigate() async {
+    // Run async logic here
+    final onboardingShown = await LocalStorageService.isOnboardingShown();
+    final loggedIn = await LocalStorageService.isLoggedIn();
+
+    // Add small splash delay
+    await Future.delayed(const Duration(seconds: 1));
+
+    if (!mounted) return;
+
+    Navigator.pushReplacementNamed(
+      context,
+      !onboardingShown
+          ? AppRoutes.onboarding
+          : (loggedIn ? AppRoutes.home : AppRoutes.login),
+    );
   }
 
   @override
