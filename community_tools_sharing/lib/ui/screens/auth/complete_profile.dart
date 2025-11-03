@@ -228,121 +228,119 @@ class _CompleteProfileState extends State<CompleteProfile> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        body: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(
-            horizontal: size.width * 0.06,
-            vertical: size.height * 0.05,
-          ),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // HEADER
-                Center(
-                  child: Column(
-                    children: [
-                      Icon(
-                        Icons.person_pin_circle_rounded,
-                        size: size.width * 0.18,
-                        color: AppColors.primary,
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(
+          horizontal: size.width * 0.06,
+          vertical: size.height * 0.05,
+        ),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // HEADER
+              Center(
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.person_pin_circle_rounded,
+                      size: size.width * 0.18,
+                      color: AppColors.primary,
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Complete Your Profile 🪪',
+                      style: TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
                       ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        'Complete Your Profile 🪪',
-                        style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
+                    ),
+                    const SizedBox(height: 6),
+                    const Text(
+                      'We need some details to verify your identity',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black54, fontSize: 15),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: size.height * 0.05),
+
+              // FORM FIELDS
+              _buildField(_firstName, 'First Name', TextInputType.name),
+              _buildField(_lastName, 'Last Name', TextInputType.name),
+              _buildField(_phone, 'Phone Number', TextInputType.phone),
+              const SizedBox(height: 10),
+
+              // ADDRESS + GPS
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _address,
+                      decoration: const InputDecoration(
+                        labelText: 'Search address or use GPS',
+                        border: OutlineInputBorder(),
                       ),
-                      const SizedBox(height: 6),
-                      const Text(
-                        'We need some details to verify your identity',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.black54, fontSize: 15),
-                      ),
-                    ],
+                      onChanged: _searchPlaces,
+                    ),
                   ),
-                ),
-                SizedBox(height: size.height * 0.05),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.my_location_rounded,
+                      color: Colors.blue,
+                    ),
+                    onPressed: _getCurrentLocation,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              _buildField(_city, 'City', TextInputType.text),
+              _buildField(_street, 'Street', TextInputType.text),
+              _buildField(_apartment, 'Apartment', TextInputType.text),
 
-                // FORM FIELDS
-                _buildField(_firstName, 'First Name', TextInputType.name),
-                _buildField(_lastName, 'Last Name', TextInputType.name),
-                _buildField(_phone, 'Phone Number', TextInputType.phone),
-                const SizedBox(height: 10),
+              const SizedBox(height: 20),
 
-                // ADDRESS + GPS
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: _address,
-                        decoration: const InputDecoration(
-                          labelText: 'Search address or use GPS',
-                          border: OutlineInputBorder(),
+              // ID IMAGES
+              const Text(
+                'Upload National ID',
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _idCardWidget(true, _frontId),
+                  _idCardWidget(false, _backId),
+                ],
+              ),
+              const SizedBox(height: 16),
+              if (_extractedIdNumber != null)
+                Text('Detected ID: $_extractedIdNumber'),
+              if (_expiryDate != null) Text('Expiry: $_expiryDate'),
+
+              const SizedBox(height: 25),
+              _loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _submit,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
-                        onChanged: _searchPlaces,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.my_location_rounded,
-                        color: Colors.blue,
-                      ),
-                      onPressed: _getCurrentLocation,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                _buildField(_city, 'City', TextInputType.text),
-                _buildField(_street, 'Street', TextInputType.text),
-                _buildField(_apartment, 'Apartment', TextInputType.text),
-
-                const SizedBox(height: 20),
-
-                // ID IMAGES
-                const Text(
-                  'Upload National ID',
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _idCardWidget(true, _frontId),
-                    _idCardWidget(false, _backId),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                if (_extractedIdNumber != null)
-                  Text('Detected ID: $_extractedIdNumber'),
-                if (_expiryDate != null) Text('Expiry: $_expiryDate'),
-
-                const SizedBox(height: 25),
-                _loading
-                    ? const Center(child: CircularProgressIndicator())
-                    : SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: _submit,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                          ),
-                          child: const Text(
-                            'Save & Continue',
-                            style: TextStyle(fontSize: 16),
-                          ),
+                        child: const Text(
+                          'Save & Continue',
+                          style: TextStyle(fontSize: 16),
                         ),
                       ),
-              ],
-            ),
+                    ),
+            ],
           ),
         ),
       ),
