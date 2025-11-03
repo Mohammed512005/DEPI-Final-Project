@@ -6,33 +6,51 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // ---------- Sign Up ----------
-  Future<String?> register(String email, String password, {String? nationalId}) async {
+  // ---------- Register (Basic) ----------
+  Future<(String? uid, String? error)> register({
+    required String email,
+    required String password,
+  }) async {
     try {
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      final userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-
-      // Get user ID
       final uid = userCredential.user?.uid;
 
-      // Store user data in Firestore
-      await _firestore.collection('users').doc(uid).set({
-        'email': email,
-        'nationalId': nationalId,
-        'createdAt': FieldValue.serverTimestamp(),
-      });
+      if (uid != null) {
+        await _firestore.collection('users').doc(uid).set({
+          'email': email,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      }
 
-      return 'success';
+      return (uid, null);
     } on FirebaseAuthException catch (e) {
-      return e.message;
+      return (null, e.message);
+    } catch (e) {
+      return (null, e.toString());
+    }
+  }
+
+  Future<void> saveUserProfileData(String uid, Map<String, dynamic> data) async {
+  await _firestore.collection('users').doc(uid).update(data);
+}
+
+  // ---------- Add/Update Full Profile ----------
+  Future<String?> updateUserProfile({
+    required String uid,
+    required Map<String, dynamic> data,
+  }) async {
+    try {
+      await _firestore.collection('users').doc(uid).set(data, SetOptions(merge: true));
+      return 'success';
     } catch (e) {
       return e.toString();
     }
   }
 
-  // ---------- Sign In ----------
+  // ---------- Login ----------
   Future<String?> login(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
@@ -45,10 +63,8 @@ class AuthService {
   }
 
   // ---------- Sign Out ----------
-  Future<void> signOut() async {
-    await _auth.signOut();
-  }
+  Future<void> signOut() async => await _auth.signOut();
 
-  // ---------- Get Current User ----------
+  // ---------- Current User ----------
   User? get currentUser => _auth.currentUser;
 }

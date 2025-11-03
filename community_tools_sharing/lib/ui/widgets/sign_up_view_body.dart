@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:community_tools_sharing/services/auth_service.dart';
 import 'package:community_tools_sharing/ui/widgets/custom_button.dart';
 import 'package:community_tools_sharing/ui/widgets/custom_text_field.dart';
 import 'package:community_tools_sharing/utils/app_routes.dart';
@@ -13,38 +12,28 @@ class SignUpViewBody extends StatefulWidget {
 }
 
 class _SignUpViewBodyState extends State<SignUpViewBody> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
-  final TextEditingController _nationalIdController = TextEditingController();
-
-  final AuthService _authService = AuthService();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmController = TextEditingController();
 
   bool _obscurePassword = true;
   bool _obscureConfirm = true;
   bool _agreeToTerms = false;
-  bool _isLoading = false;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    _nationalIdController.dispose();
+    _confirmController.dispose();
     super.dispose();
   }
 
-  Future<void> _signUp() async {
+  void _onNext(BuildContext context) {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
-    final confirmPassword = _confirmPasswordController.text.trim();
-    final nationalId = _nationalIdController.text.trim();
+    final confirm = _confirmController.text.trim();
 
-    if (email.isEmpty ||
-        password.isEmpty ||
-        confirmPassword.isEmpty ||
-        nationalId.isEmpty) {
+    if (email.isEmpty || password.isEmpty || confirm.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please fill in all fields')),
       );
@@ -53,47 +42,24 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
 
     if (!_agreeToTerms) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please agree to the Terms & Conditions first'),
-        ),
+        const SnackBar(content: Text('Please agree to Terms & Conditions')),
       );
       return;
     }
 
-    if (password != confirmPassword) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Passwords do not match')));
-      return;
-    }
-
-    if (nationalId.length != 14) {
+    if (password != confirm) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('National ID must be 14 digits')),
+        const SnackBar(content: Text('Passwords do not match')),
       );
       return;
     }
 
-    setState(() => _isLoading = true);
-
-    final result = await _authService.register(email, password, nationalId: nationalId);
-
-    setState(() => _isLoading = false);
-
-    if (mounted) {
-      if (result == 'success') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Account created successfully!')),
-        );
-
-        // Navigate to login or verification screen
-        Navigator.pushReplacementNamed(context, AppRoutes.mailVerification);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(result ?? 'Registration failed')),
-        );
-      }
-    }
+    // ✅ Navigate to CompleteProfile screen with credentials
+    Navigator.pushNamed(
+      context,
+      AppRoutes.completeProfile,
+      arguments: {'email': email, 'password': password},
+    );
   }
 
   @override
@@ -102,7 +68,6 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
 
     return SafeArea(
       child: Scaffold(
-        resizeToAvoidBottomInset: true,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: SingleChildScrollView(
           padding: EdgeInsets.symmetric(
@@ -112,7 +77,6 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ---------- Header ----------
               Center(
                 child: Column(
                   children: [
@@ -129,7 +93,6 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
                         fontWeight: FontWeight.w700,
                         color: Color(0xFF1E1E1E),
                       ),
-                      textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 5),
                     Text(
@@ -142,93 +105,65 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
                   ],
                 ),
               ),
-
               SizedBox(height: size.height * 0.06),
 
-              // ---------- Email ----------
+              // --- Email Field ---
               CustomTextFormField(
                 controller: _emailController,
                 hintText: 'Email',
                 textInputType: TextInputType.emailAddress,
-                prefixIcon: Icon(
-                  Icons.email_outlined,
-                  color: Colors.grey.shade600,
-                ),
+                prefixIcon: Icon(Icons.email_outlined, color: Colors.grey.shade600),
               ),
               const SizedBox(height: 16),
 
-              // ---------- Password ----------
+              // --- Password Field ---
               CustomTextFormField(
                 controller: _passwordController,
                 hintText: 'Password',
                 textInputType: TextInputType.visiblePassword,
                 obscureText: _obscurePassword,
-                prefixIcon: Icon(
-                  Icons.lock_outline,
-                  color: Colors.grey.shade600,
-                ),
+                prefixIcon: Icon(Icons.lock_outline, color: Colors.grey.shade600),
                 suffixIcon: IconButton(
                   icon: Icon(
                     _obscurePassword ? Icons.visibility_off : Icons.visibility,
                     color: Colors.grey.shade600,
                   ),
-                  onPressed: () =>
-                      setState(() => _obscurePassword = !_obscurePassword),
+                  onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                 ),
               ),
               const SizedBox(height: 16),
 
-              // ---------- Confirm Password ----------
+              // --- Confirm Password Field ---
               CustomTextFormField(
-                controller: _confirmPasswordController,
+                controller: _confirmController,
                 hintText: 'Confirm Password',
                 textInputType: TextInputType.visiblePassword,
                 obscureText: _obscureConfirm,
-                prefixIcon: Icon(
-                  Icons.lock_reset_outlined,
-                  color: Colors.grey.shade600,
-                ),
+                prefixIcon: Icon(Icons.lock_reset_outlined, color: Colors.grey.shade600),
                 suffixIcon: IconButton(
                   icon: Icon(
                     _obscureConfirm ? Icons.visibility_off : Icons.visibility,
                     color: Colors.grey.shade600,
                   ),
-                  onPressed: () =>
-                      setState(() => _obscureConfirm = !_obscureConfirm),
+                  onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
                 ),
               ),
-              const SizedBox(height: 16),
-
-              // ---------- National ID ----------
-              CustomTextFormField(
-                controller: _nationalIdController,
-                hintText: 'National ID',
-                textInputType: TextInputType.number,
-                prefixIcon: Icon(
-                  Icons.badge_outlined,
-                  color: Colors.grey.shade600,
-                ),
-              ),
-
               SizedBox(height: size.height * 0.03),
 
-              // ---------- Terms & Conditions ----------
+              // --- Terms & Conditions ---
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Checkbox(
                     value: _agreeToTerms,
                     activeColor: Colors.deepPurple,
-                    onChanged: (value) =>
-                        setState(() => _agreeToTerms = value ?? false),
+                    onChanged: (v) => setState(() => _agreeToTerms = v ?? false),
                   ),
                   Expanded(
                     child: Text.rich(
                       TextSpan(
                         text: 'I agree to the ',
-                        style: AppStyle.kSecondaryTextStyle.copyWith(
-                          fontSize: 14,
-                        ),
+                        style: AppStyle.kSecondaryTextStyle.copyWith(fontSize: 14),
                         children: [
                           TextSpan(
                             text: 'Terms & Conditions',
@@ -243,29 +178,23 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
                   ),
                 ],
               ),
-
               SizedBox(height: size.height * 0.03),
 
-              // ---------- Sign Up Button ----------
-              _isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : CustomButton(text: "Sign Up", onPressed: _signUp),
+              // --- Next Button ---
+              CustomButton(
+                text: "Next",
+                onPressed: () => _onNext(context),
+              ),
 
               SizedBox(height: size.height * 0.05),
 
-              // ---------- Already Have Account ----------
+              // --- Already Have Account ---
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'Already have an account? ',
-                    style: AppStyle.kSecondaryTextStyle,
-                  ),
+                  Text('Already have an account? ', style: AppStyle.kSecondaryTextStyle),
                   GestureDetector(
-                    onTap: () => Navigator.pushReplacementNamed(
-                      context,
-                      AppRoutes.login,
-                    ),
+                    onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.login),
                     child: Text(
                       'Sign In',
                       style: AppStyle.kSecondaryTextStyle.copyWith(
@@ -276,7 +205,6 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
                   ),
                 ],
               ),
-              SizedBox(height: size.height * 0.05),
             ],
           ),
         ),
