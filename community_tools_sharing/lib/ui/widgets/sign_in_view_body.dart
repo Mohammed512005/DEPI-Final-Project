@@ -150,7 +150,7 @@ class _SignInViewBodyState extends State<SignInViewBody> {
                 alignment: Alignment.centerRight,
                 child: GestureDetector(
                   onTap: () {
-                    // TODO: Add forgot password screen
+                    Navigator.pushNamed(context, AppRoutes.forgetPassword);
                   },
                   child: Text(
                     'Forgot Password?',
