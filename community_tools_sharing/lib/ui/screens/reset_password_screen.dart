@@ -82,7 +82,40 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               ),
 
               SizedBox(height: 20),
-              CustomButton(text: 'Update Password', onPressed: () {}),
+              CustomButton(
+                text: 'Update Password',
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('password Updated!'),
+                        content: SizedBox(
+                          height: 80,
+                          child: Column(
+                            children: [
+                              SizedBox(height: 10),
+
+                              const Text('Your Password has been Successfully'),
+                              const Text('changed ☑️'),
+                              SizedBox(height: 10),
+                              const Text('You can now log into your account.'),
+                            ],
+                          ),
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, AppRoutes.login);
+                            },
+                            child: const Text('Go to Login'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
             ],
           ),
         ),
