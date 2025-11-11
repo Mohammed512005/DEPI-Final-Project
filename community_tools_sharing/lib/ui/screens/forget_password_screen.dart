@@ -2,6 +2,7 @@ import 'package:community_tools_sharing/ui/widgets/custom_app_bar.dart';
 import 'package:community_tools_sharing/ui/widgets/custom_button.dart';
 import 'package:community_tools_sharing/ui/widgets/custom_text_field.dart';
 import 'package:community_tools_sharing/utils/app_assets.dart';
+import 'package:community_tools_sharing/utils/app_routes.dart';
 import 'package:community_tools_sharing/utils/app_style.dart';
 import 'package:flutter/material.dart';
 
@@ -58,7 +59,12 @@ class ForgotPasswordScreen extends StatelessWidget {
                 textInputType: TextInputType.emailAddress,
               ),
               SizedBox(height: 16),
-              CustomButton(text: 'Send Reset Link', onPressed: () {}),
+              CustomButton(
+                text: 'Send Reset Link',
+                onPressed: () {
+                  Navigator.pushNamed(context, AppRoutes.resetPassword);
+                },
+              ),
             ],
           ),
         ),
