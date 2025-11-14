@@ -1,3 +1,5 @@
+import 'package:community_tools_sharing/ui/screens/forget_password_screen.dart';
+import 'package:community_tools_sharing/ui/screens/reset_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:community_tools_sharing/ui/screens/auth/complete_profile.dart';
 import 'package:community_tools_sharing/ui/screens/auth/sign_in_screen.dart';
@@ -25,6 +27,8 @@ class AppRoutes {
   static const String register = '/register';
   static const String toolDetails = '/toolDetails';
   static const String completeProfile = '/completeProfile';
+  static const String forgetPassword = '/forgetPassword';
+  static const String resetPassword = '/resetPassword';
 
   static final Map<String, WidgetBuilder> routes = {
     splash: (context) => const SplashScreen(),
@@ -38,6 +42,8 @@ class AppRoutes {
     login: (context) => const SignInScreen(),
     register: (context) => const SignUpScreen(),
     toolDetails: (context) => const ToolDetailsScreen(),
+    forgetPassword: (context) => const ForgotPasswordScreen(),
+    resetPassword: (context) => const ResetPasswordScreen(),
   };
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {

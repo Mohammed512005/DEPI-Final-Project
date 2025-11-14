@@ -17,4 +17,5 @@ abstract final class AppAssets {
   static const reviewIcon = "${_baseImage2}review_icon.png";
   static const settingIcon = "${_baseImage2}setting_icon.png";
   static const toolIcon = "${_baseImage2}tool_icon.png";
+  static const forgetPassword = "${_baseImage}forgetpassword.png";
 }
