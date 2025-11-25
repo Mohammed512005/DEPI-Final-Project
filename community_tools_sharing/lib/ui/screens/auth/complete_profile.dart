@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:community_tools_sharing/services/auth_service.dart';
+import 'package:community_tools_sharing/services/supabase_service.dart';
 import 'package:community_tools_sharing/utils/app_colors.dart';
 import 'package:community_tools_sharing/utils/app_routes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_google_places_sdk/flutter_google_places_sdk.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:community_tools_sharing/services/location_service.dart';
+import 'package:community_tools_sharing/services/ocr_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -41,67 +41,44 @@ class _CompleteProfileState extends State<CompleteProfile> {
   String? _extractedIdNumber;
   String? _expiryDate;
 
-  // Replace with your actual Google Places API key
-  final _places = FlutterGooglePlacesSdk(
-    'AIzaSyD8sfOw8pMudOe2AT_JlQw6ws1KxYzZ5ts',
-  );
   String? _lat;
   String? _lng;
 
   final _auth = FirebaseAuth.instance;
   final _authService = AuthService();
+  final _supabaseService = SupabaseService();
+  final _ocrService = OcrService();
+  final _locationService = LocationService();
 
   bool _loading = false;
 
   // ---------------- LOCATION ----------------
+  // ---------------- LOCATION ----------------
   Future<void> _getCurrentLocation() async {
     try {
-      bool enabled = await Geolocator.isLocationServiceEnabled();
-      if (!enabled) {
-        _showSnack('Location services are disabled');
-        return;
-      }
-
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-      }
-
-      if (permission == LocationPermission.denied ||
-          permission == LocationPermission.deniedForever) {
-        _showSnack('Location permission denied');
-        return;
-      }
-
-      final pos = await Geolocator.getCurrentPosition();
+      final pos = await _locationService.getCurrentLocation();
       setState(() {
         _lat = pos.latitude.toString();
         _lng = pos.longitude.toString();
         _address.text = 'Lat: ${_lat!}, Lng: ${_lng!}';
       });
     } catch (e) {
-      _showSnack('Location error: $e');
+      _showSnack(e.toString());
     }
   }
 
   Future<void> _searchPlaces(String q) async {
-    if (q.isEmpty) return;
     try {
-      final res = await _places.findAutocompletePredictions(q);
-      if (res.predictions.isEmpty) return;
-      final first = res.predictions.first;
-      final details = await _places.fetchPlace(
-        first.placeId,
-        fields: [PlaceField.Location, PlaceField.AddressComponents],
-      );
-      final loc = details.place?.latLng;
-      setState(() {
-        _address.text = first.fullText;
-        _lat = loc?.lat.toString();
-        _lng = loc?.lng.toString();
-      });
+      final result = await _locationService.searchPlace(q);
+      if (result != null) {
+        setState(() {
+          _address.text = result['address'];
+          _lat = result['lat']?.toString();
+          _lng = result['lng']?.toString();
+        });
+      }
     } catch (e) {
-      _showSnack('Location search failed: $e');
+      _showSnack(e.toString());
     }
   }
 
@@ -124,24 +101,9 @@ class _CompleteProfileState extends State<CompleteProfile> {
 
   Future<void> _extractIdData(File imageFile) async {
     try {
-      final inputImage = InputImage.fromFile(imageFile);
-      final textRecognizer = TextRecognizer();
-      final recognizedText = await textRecognizer.processImage(inputImage);
-      await textRecognizer.close();
-
-      String? id;
-      String? expiry;
-
-      for (final block in recognizedText.blocks) {
-        final text = block.text.replaceAll(' ', '');
-        final matchId = RegExp(r'\d{14}').firstMatch(text);
-        if (matchId != null) id = matchId.group(0);
-
-        final matchExp = RegExp(
-          r'(\d{2}\/\d{4}|\d{2}\/\d{2}\/\d{4})',
-        ).firstMatch(block.text);
-        if (matchExp != null) expiry = matchExp.group(0);
-      }
+      final data = await _ocrService.extractIdData(imageFile);
+      final id = data['id'];
+      final expiry = data['expiry'];
 
       if (id == null) {
         _showSnack('Could not read ID — please retake photo clearly');
@@ -152,7 +114,7 @@ class _CompleteProfileState extends State<CompleteProfile> {
         _expiryDate = expiry;
       });
     } catch (e) {
-      _showSnack('OCR failed: $e');
+      _showSnack(e.toString());
     }
   }
 
@@ -181,6 +143,19 @@ class _CompleteProfileState extends State<CompleteProfile> {
 
       final uid = userCredential.user!.uid;
 
+      // Upload images to Supabase
+      final frontUrl = await _supabaseService.uploadUserIdImage(
+        image: _frontId!,
+        userId: uid,
+        isFront: true,
+      );
+
+      final backUrl = await _supabaseService.uploadUserIdImage(
+        image: _backId!,
+        userId: uid,
+        isFront: false,
+      );
+
       // ✅ Save full profile data
       final data = {
         'firstName': _firstName.text.trim(),
@@ -194,6 +169,8 @@ class _CompleteProfileState extends State<CompleteProfile> {
         'longitude': _lng,
         'nationalId': _extractedIdNumber,
         'idExpiry': _expiryDate,
+        'frontIdUrl': frontUrl,
+        'backIdUrl': backUrl,
         'createdAt': FieldValue.serverTimestamp(),
       };
 
