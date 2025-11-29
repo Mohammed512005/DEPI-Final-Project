@@ -16,12 +16,12 @@ class MainLayout extends StatefulWidget {
 class _MainLayoutState extends State<MainLayout> {
   int _currentIndex = 0;
 
-  final List<Widget> _screens = const [
+  final List<Widget> _screens = [
     HomeScreen(),
-    BrowseScreen(),
-    AddToolScreen(),
-    BookingScreen(),
-    ProfileScreen(),
+    const BrowseScreen(),
+    const AddToolScreen(),
+    const BookingScreen(),
+    const ProfileScreen(),
   ];
 
   void _onTabTapped(int index) {

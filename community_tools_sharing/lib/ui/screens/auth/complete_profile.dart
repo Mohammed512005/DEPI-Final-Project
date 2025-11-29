@@ -345,7 +345,7 @@ class _CompleteProfileState extends State<CompleteProfile> {
 
   Widget _idCardWidget(bool front, File? file) {
     return GestureDetector(
-      onTap: () => _pickImage(front),
+      // onTap: () => _pickImage(front),
       child: Container(
         height: 100,
         width: 140,

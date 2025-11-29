@@ -1,11 +1,14 @@
+import 'package:community_tools_sharing/services/notification_service.dart';
 import 'package:community_tools_sharing/ui/widgets/category_chip.dart';
 import 'package:community_tools_sharing/ui/widgets/nearby_item_card.dart';
 import 'package:community_tools_sharing/ui/widgets/search_bar.dart';
 import 'package:community_tools_sharing/utils/app_assets.dart';
+import 'package:community_tools_sharing/utils/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
 
   final List<String> categories = const [
     'All',
@@ -43,6 +46,14 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = Supabase.instance.client.auth.currentUser;
+
+    if (currentUser == null) {
+      return const Scaffold(body: Center(child: Text("Login first")));
+    }
+
+    final currentUserId = currentUser.id;
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
@@ -53,10 +64,50 @@ class HomeScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const SizedBox(width: 30),
-                Expanded(
+                // 🔔 Notification with badge
+                StreamBuilder<int>(
+                  stream: NotificationService().getUnreadCount(currentUserId),
+                  builder: (context, snapshot) {
+                    int count = snapshot.data ?? 0;
+
+                    return Stack(
+                      alignment: Alignment.topRight,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, AppRoutes.notf);
+                          },
+                          icon: const Icon(Icons.notifications),
+                        ),
+
+                        if (count > 0)
+                          Positioned(
+                            right: 6,
+                            top: 6,
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: const BoxDecoration(
+                                color: Colors.red,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Text(
+                                count.toString(),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    );
+                  },
+                ),
+
+                const Expanded(
                   child: Center(
-                    child: const Text(
+                    child: Text(
                       'ConnecTools',
                       style: TextStyle(
                         fontSize: 20,
@@ -65,14 +116,11 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                IconButton(
-                  onPressed: () {
-                    // TODO: open filter/sort modal
-                  },
-                  icon: const Icon(Icons.settings),
-                ),
+
+                IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
               ],
             ),
+
             const SizedBox(height: 10),
 
             // Search bar
@@ -85,12 +133,13 @@ class HomeScreen extends StatelessWidget {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: categories.length,
-                separatorBuilder: (_, _) => const SizedBox(width: 8),
+                separatorBuilder: (_, __) => const SizedBox(width: 8),
                 itemBuilder: (context, index) {
                   return CategoryChip(label: categories[index]);
                 },
               ),
             ),
+
             const SizedBox(height: 20),
 
             const Text(
@@ -99,7 +148,6 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 10),
 
-            // Nearby Items
             Expanded(
               child: GridView.builder(
                 itemCount: nearbyItems.length,

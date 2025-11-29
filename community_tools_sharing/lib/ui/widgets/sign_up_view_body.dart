@@ -48,9 +48,9 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
     }
 
     if (password != confirm) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Passwords do not match')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Passwords do not match')));
       return;
     }
 
@@ -112,7 +112,10 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
                 controller: _emailController,
                 hintText: 'Email',
                 textInputType: TextInputType.emailAddress,
-                prefixIcon: Icon(Icons.email_outlined, color: Colors.grey.shade600),
+                prefixIcon: Icon(
+                  Icons.email_outlined,
+                  color: Colors.grey.shade600,
+                ),
               ),
               const SizedBox(height: 16),
 
@@ -122,13 +125,17 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
                 hintText: 'Password',
                 textInputType: TextInputType.visiblePassword,
                 obscureText: _obscurePassword,
-                prefixIcon: Icon(Icons.lock_outline, color: Colors.grey.shade600),
+                prefixIcon: Icon(
+                  Icons.lock_outline,
+                  color: Colors.grey.shade600,
+                ),
                 suffixIcon: IconButton(
                   icon: Icon(
                     _obscurePassword ? Icons.visibility_off : Icons.visibility,
                     color: Colors.grey.shade600,
                   ),
-                  onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                  onPressed: () =>
+                      setState(() => _obscurePassword = !_obscurePassword),
                 ),
               ),
               const SizedBox(height: 16),
@@ -139,13 +146,17 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
                 hintText: 'Confirm Password',
                 textInputType: TextInputType.visiblePassword,
                 obscureText: _obscureConfirm,
-                prefixIcon: Icon(Icons.lock_reset_outlined, color: Colors.grey.shade600),
+                prefixIcon: Icon(
+                  Icons.lock_reset_outlined,
+                  color: Colors.grey.shade600,
+                ),
                 suffixIcon: IconButton(
                   icon: Icon(
                     _obscureConfirm ? Icons.visibility_off : Icons.visibility,
                     color: Colors.grey.shade600,
                   ),
-                  onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
+                  onPressed: () =>
+                      setState(() => _obscureConfirm = !_obscureConfirm),
                 ),
               ),
               SizedBox(height: size.height * 0.03),
@@ -157,13 +168,16 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
                   Checkbox(
                     value: _agreeToTerms,
                     activeColor: Colors.deepPurple,
-                    onChanged: (v) => setState(() => _agreeToTerms = v ?? false),
+                    onChanged: (v) =>
+                        setState(() => _agreeToTerms = v ?? false),
                   ),
                   Expanded(
                     child: Text.rich(
                       TextSpan(
                         text: 'I agree to the ',
-                        style: AppStyle.kSecondaryTextStyle.copyWith(fontSize: 14),
+                        style: AppStyle.kSecondaryTextStyle.copyWith(
+                          fontSize: 14,
+                        ),
                         children: [
                           TextSpan(
                             text: 'Terms & Conditions',
@@ -183,7 +197,10 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
               // --- Next Button ---
               CustomButton(
                 text: "Next",
-                onPressed: () => _onNext(context),
+                onPressed: () {
+                  Navigator.pushNamed(context, AppRoutes.home);
+                },
+                // => _onNext(context),
               ),
 
               SizedBox(height: size.height * 0.05),
@@ -192,9 +209,15 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Already have an account? ', style: AppStyle.kSecondaryTextStyle),
+                  Text(
+                    'Already have an account? ',
+                    style: AppStyle.kSecondaryTextStyle,
+                  ),
                   GestureDetector(
-                    onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.login),
+                    onTap: () => Navigator.pushReplacementNamed(
+                      context,
+                      AppRoutes.login,
+                    ),
                     child: Text(
                       'Sign In',
                       style: AppStyle.kSecondaryTextStyle.copyWith(
