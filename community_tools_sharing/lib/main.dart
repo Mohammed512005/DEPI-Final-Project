@@ -9,8 +9,9 @@ import 'utils/app_themes.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 const supabaseUrl = 'https://aocxtygybbboqmurwfoz.supabase.co';
-const supabaseKey = String.fromEnvironment('SUPABASE_KEY');
-
+// const supabaseKey = String.fromEnvironment('SUPABASE_KEY');
+const supabaseKey =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFvY3h0eWd5YmJib3FtdXJ3Zm96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5ODIzMDQsImV4cCI6MjA3OTU1ODMwNH0.86datZvRN45ijoezIAmnSyvTUWfHH6NoJRLXl7nh4MQ';
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   print("Handling a background message: ${message.messageId}");
