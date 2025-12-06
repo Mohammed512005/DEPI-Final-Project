@@ -197,10 +197,11 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
               // --- Next Button ---
               CustomButton(
                 text: "Next",
-                onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.home);
-                },
-                // => _onNext(context),
+                onPressed: () 
+                // {
+                //   Navigator.pushNamed(context, AppRoutes.home);
+                // },
+                 => _onNext(context),
               ),
 
               SizedBox(height: size.height * 0.05),
