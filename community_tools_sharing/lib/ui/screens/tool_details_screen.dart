@@ -4,16 +4,31 @@ import 'package:community_tools_sharing/utils/app_assets.dart';
 import 'package:community_tools_sharing/utils/app_style.dart';
 
 class ToolDetailsScreen extends StatelessWidget {
-  const ToolDetailsScreen({super.key});
+  final String title;
+  final String image;
+  final String description;
+  final String condition;
+  final String ownerName;
+  final String price;
+
+  const ToolDetailsScreen({
+    super.key,
+    required this.title,
+    required this.image,
+    required this.description,
+    required this.condition,
+    required this.ownerName,
+    required this.price,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text(
-          'Tool Details',
-          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
+        title: Text(
+          title,
+          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
         ),
       ),
       body: SingleChildScrollView(
@@ -26,7 +41,7 @@ class ToolDetailsScreen extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.asset(
-                AppAssets.homeImage2, // 🔹 From your assets file
+                image,
                 height: 250,
                 width: double.infinity,
                 fit: BoxFit.cover,
@@ -35,7 +50,7 @@ class ToolDetailsScreen extends StatelessWidget {
 
             // Tool Name
             Text(
-              'Power Drill',
+              title,
               style: AppStyle.mainTextStyle.copyWith(
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
@@ -44,7 +59,7 @@ class ToolDetailsScreen extends StatelessWidget {
 
             // Description
             Text(
-              'This power drill is perfect for any home improvement project. It\'s lightweight, powerful, and easy to use.',
+              description,
               style: AppStyle.kSecondaryTextStyle.copyWith(fontSize: 16),
               softWrap: true,
             ),
@@ -60,7 +75,7 @@ class ToolDetailsScreen extends StatelessWidget {
               ),
             ),
             Text(
-              'New',
+              condition,
               style: AppStyle.kSecondaryTextStyle.copyWith(fontSize: 16),
             ),
 
@@ -78,16 +93,14 @@ class ToolDetailsScreen extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 25,
-                  backgroundImage: AssetImage(
-                    AppAssets.profileImage,
-                  ), // 🔹 From assets
+                  backgroundImage: AssetImage(AppAssets.profileImage),
                 ),
                 const SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'John Doe',
+                      ownerName,
                       style: AppStyle.mainTextStyle.copyWith(fontSize: 16),
                     ),
                     Row(
@@ -125,7 +138,7 @@ class ToolDetailsScreen extends StatelessWidget {
               ),
             ),
             Text(
-              '\$50 / day',
+              price,
               style: AppStyle.kSecondaryTextStyle.copyWith(fontSize: 16),
             ),
 
@@ -133,9 +146,7 @@ class ToolDetailsScreen extends StatelessWidget {
 
             // Book Now Button
             ElevatedButton(
-              onPressed: () {
-                // TODO: Add booking logic or navigation
-              },
+              onPressed: () {},
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0XFF1294D4),
                 minimumSize: const Size(double.infinity, 55),

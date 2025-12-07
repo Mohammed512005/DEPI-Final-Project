@@ -6,6 +6,7 @@ import 'package:community_tools_sharing/utils/app_assets.dart';
 import 'package:community_tools_sharing/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:community_tools_sharing/ui/screens/tool_details_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
@@ -23,24 +24,36 @@ class HomeScreen extends StatelessWidget {
       'price': '\$10/day',
       'distance': '1.2 miles',
       'image': AppAssets.homeImage1,
+      'description': 'A reliable lawn mower great for maintaining your yard.',
+      'owner': 'Alice Johnson',
+      'condition': 'Good',
     },
     {
       'title': 'Drill',
       'price': 'Free',
       'distance': '0.8 miles',
       'image': AppAssets.homeImage2,
+      'description': 'Powerful drill suitable for construction and repairs.',
+      'owner': 'Jake Smith',
+      'condition': 'Like New',
     },
     {
       'title': 'Blender',
       'price': '\$5/day',
       'distance': '2.5 miles',
       'image': AppAssets.homeImage3,
+      'description': 'Perfect for smoothies and kitchen tasks.',
+      'owner': 'Maria Lopez',
+      'condition': 'New',
     },
     {
       'title': 'Saw',
       'price': '\$15/day',
       'distance': '1.5 miles',
       'image': AppAssets.homeImage4,
+      'description': 'Heavy-duty saw ideal for wood-cutting projects.',
+      'owner': 'David Lee',
+      'condition': 'Used',
     },
   ];
 
@@ -64,7 +77,7 @@ class HomeScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // 🔔 Notification with badge
+                // 🔔 Notifications
                 StreamBuilder<int>(
                   stream: NotificationService().getUnreadCount(currentUserId),
                   builder: (context, snapshot) {
@@ -79,7 +92,6 @@ class HomeScreen extends StatelessWidget {
                           },
                           icon: const Icon(Icons.notifications),
                         ),
-
                         if (count > 0)
                           Positioned(
                             right: 6,
@@ -127,7 +139,7 @@ class HomeScreen extends StatelessWidget {
             const CustomSearchBar(),
             const SizedBox(height: 10),
 
-            // Category list
+            // Categories
             SizedBox(
               height: 40,
               child: ListView.separated(
@@ -159,11 +171,27 @@ class HomeScreen extends StatelessWidget {
                 ),
                 itemBuilder: (context, index) {
                   final item = nearbyItems[index];
+
                   return NearbyItemCard(
                     title: item['title'],
                     price: item['price'],
                     distance: item['distance'],
                     image: item['image'],
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ToolDetailsScreen(
+                            title: item['title'],
+                            image: item['image'],
+                            description: item['description'],
+                            condition: item['condition'],
+                            ownerName: item['owner'],
+                            price: item['price'],
+                          ),
+                        ),
+                      );
+                    },
                   );
                 },
               ),

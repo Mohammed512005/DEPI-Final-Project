@@ -12,7 +12,7 @@ class NearbyItemCard extends StatelessWidget {
     required this.title,
     required this.price,
     required this.distance,
-    required this.image,
+    required this.image, required Null Function() onTap,
   });
 
   @override
