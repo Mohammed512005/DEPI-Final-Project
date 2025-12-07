@@ -5,7 +5,6 @@ import 'package:community_tools_sharing/utils/app_routes.dart';
 import 'package:community_tools_sharing/utils/app_style.dart';
 import 'package:community_tools_sharing/ui/screens/auth/complete_profile.dart';
 
-
 class SignUpViewBody extends StatefulWidget {
   const SignUpViewBody({super.key});
 
@@ -67,7 +66,6 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -113,7 +111,7 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
               ),
               SizedBox(height: size.height * 0.06),
 
-              // --- Email Field ---
+              // Email
               CustomTextFormField(
                 controller: _emailController,
                 hintText: 'Email',
@@ -125,7 +123,7 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
               ),
               const SizedBox(height: 16),
 
-              // --- Password Field ---
+              // Password
               CustomTextFormField(
                 controller: _passwordController,
                 hintText: 'Password',
@@ -146,7 +144,7 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
               ),
               const SizedBox(height: 16),
 
-              // --- Confirm Password Field ---
+              // Confirm Password
               CustomTextFormField(
                 controller: _confirmController,
                 hintText: 'Confirm Password',
@@ -167,9 +165,8 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
               ),
               SizedBox(height: size.height * 0.03),
 
-              // --- Terms & Conditions ---
+              // Terms & conditions
               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Checkbox(
                     value: _agreeToTerms,
@@ -198,26 +195,18 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
                   ),
                 ],
               ),
+
               SizedBox(height: size.height * 0.03),
 
-              // --- Next Button ---
+              // Button — FIXED
               CustomButton(
                 text: "Next",
-<<<<<<< HEAD
-                onPressed: () 
-                // {
-                //   Navigator.pushNamed(context, AppRoutes.home);
-                // },
-                 => _onNext(context),
-=======
                 onPressed: () => _onNext(context),
->>>>>>> e9d8737 (Update UI flow and fix login routing)
               ),
-
 
               SizedBox(height: size.height * 0.05),
 
-              // --- Already Have Account ---
+              // Already have an account?
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

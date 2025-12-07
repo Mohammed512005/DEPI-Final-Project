@@ -43,7 +43,10 @@ class AppRoutes {
     profile: (context) => const ProfileScreen(),
     login: (context) => const SignInScreen(),
     register: (context) => const SignUpScreen(),
-    toolDetails: (context) => const ToolDetailsScreen(),
+
+    // ❌ Removed the invalid ToolDetailsScreen() here
+    // toolDetails: (context) => const ToolDetailsScreen(),
+
     forgetPassword: (context) => const ForgotPasswordScreen(),
     resetPassword: (context) => const ResetPasswordScreen(),
     notf: (context) => NotificationScreen(),
@@ -51,6 +54,33 @@ class AppRoutes {
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
+
+      case toolDetails:
+        final args = settings.arguments;
+        if (args is Map<String, dynamic>) {
+          return MaterialPageRoute(
+            builder: (_) => ToolDetailsScreen(
+              title: args['title'],
+              image: args['image'],
+              description: args['description'],
+              condition: args['condition'],
+              ownerName: args['ownerName'],
+              price: args['price'],
+            ),
+          );
+        } else {
+          return MaterialPageRoute(
+            builder: (_) => const Scaffold(
+              body: Center(
+                child: Text(
+                  'Missing tool data for Tool Details screen',
+                  style: TextStyle(fontSize: 16, color: Colors.red),
+                ),
+              ),
+            ),
+          );
+        }
+
       case completeProfile:
         final args = settings.arguments;
         if (args is Map<String, String>) {
@@ -61,7 +91,6 @@ class AppRoutes {
             ),
           );
         } else {
-          // 🧱 fallback if arguments are missing
           return MaterialPageRoute(
             builder: (_) => const Scaffold(
               body: Center(
