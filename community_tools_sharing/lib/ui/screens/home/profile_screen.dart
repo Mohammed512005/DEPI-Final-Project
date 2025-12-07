@@ -4,6 +4,7 @@ import 'package:community_tools_sharing/ui/widgets/build_profile_section.dart';
 import 'package:community_tools_sharing/ui/widgets/custom_app_bar.dart';
 import 'package:community_tools_sharing/utils/app_assets.dart';
 import 'package:community_tools_sharing/utils/app_style.dart';
+import 'package:community_tools_sharing/utils/app_routes.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -13,21 +14,25 @@ class ProfileScreen extends StatelessWidget {
       headTitle: 'My Tools',
       subTitle: 'View and manage all tools you listed.',
       icon: AppAssets.toolIcon,
+      routeName: AppRoutes.browse,
     ),
     ProfileSectionModel(
       headTitle: 'My Bookings',
       subTitle: 'See tools you booked or borrowed.',
       icon: AppAssets.bookingIcon,
+      routeName: AppRoutes.bookings,
     ),
     ProfileSectionModel(
       headTitle: 'Reviews',
       subTitle: 'Check feedback you received or gave.',
       icon: AppAssets.reviewIcon,
+      routeName: AppRoutes.notf,
     ),
     ProfileSectionModel(
       headTitle: 'Settings',
       subTitle: 'Manage your profile and preferences.',
       icon: AppAssets.settingIcon,
+      routeName: AppRoutes.profile,
     ),
     ProfileSectionModel(
       headTitle: 'Logout',
@@ -35,6 +40,7 @@ class ProfileScreen extends StatelessWidget {
       icon: AppAssets.logoutIcon,
     ),
   ];
+
 
   @override
   Widget build(BuildContext context) {

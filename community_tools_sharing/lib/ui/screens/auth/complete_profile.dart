@@ -128,11 +128,9 @@ class _CompleteProfileState extends State<CompleteProfile> {
 
     setState(() => _loading = true);
 
-    // ✅ Get email and password from route arguments
-    final args =
-        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
-    final email = args['email']!;
-    final password = args['password']!;
+    // ✅ Get email and password
+    final email = widget.email;
+    final password = widget.password;
 
     try {
       // ✅ Create Firebase user now

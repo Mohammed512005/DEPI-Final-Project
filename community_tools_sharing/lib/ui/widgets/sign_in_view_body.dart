@@ -111,16 +111,20 @@ class _SignInViewBodyState extends State<SignInViewBody> {
               SizedBox(height: size.height * 0.07),
 
               // ---------- Email Field ----------
-              CustomTextFormField(
-                controller: _emailController,
-                hintText: 'Email',
-                textInputType: TextInputType.emailAddress,
-                prefixIcon: Icon(
-                  Icons.email_outlined,
-                  color: Colors.grey.shade600,
-                ),
-              ),
-              const SizedBox(height: 20),
+        TextFormField(
+          controller: _emailController,
+          keyboardType: TextInputType.emailAddress,
+          decoration: InputDecoration(
+            labelText: 'Email',
+            prefixIcon: Icon(
+              Icons.email_outlined,
+              color: Colors.grey.shade600,
+            ),
+            border: const OutlineInputBorder(),
+          ),
+        ),
+
+        const SizedBox(height: 20),
 
               // ---------- Password Field ----------
               CustomTextFormField(
@@ -166,9 +170,15 @@ class _SignInViewBodyState extends State<SignInViewBody> {
               // ---------- Sign In Button ----------
               _isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : CustomButton(text: 'Sign In', onPressed: _signIn),
+                  : CustomButton(
+                      text: 'Sign In',
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(context, AppRoutes.home);
+                        },
+                   ),
 
-              SizedBox(height: size.height * 0.03),
+
+    SizedBox(height: size.height * 0.03),
 
               // ---------- Divider ----------
               Row(
