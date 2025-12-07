@@ -3,6 +3,8 @@ import 'package:community_tools_sharing/ui/widgets/custom_button.dart';
 import 'package:community_tools_sharing/ui/widgets/custom_text_field.dart';
 import 'package:community_tools_sharing/utils/app_routes.dart';
 import 'package:community_tools_sharing/utils/app_style.dart';
+import 'package:community_tools_sharing/ui/screens/auth/complete_profile.dart';
+
 
 class SignUpViewBody extends StatefulWidget {
   const SignUpViewBody({super.key});
@@ -48,19 +50,23 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
     }
 
     if (password != confirm) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Passwords do not match')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Passwords do not match')),
+      );
       return;
     }
 
-    // ✅ Navigate to CompleteProfile screen with credentials
-    Navigator.pushNamed(
+    Navigator.push(
       context,
-      AppRoutes.completeProfile,
-      arguments: {'email': email, 'password': password},
+      MaterialPageRoute(
+        builder: (_) => CompleteProfile(
+          email: email,
+          password: password,
+        ),
+      ),
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -197,12 +203,17 @@ class _SignUpViewBodyState extends State<SignUpViewBody> {
               // --- Next Button ---
               CustomButton(
                 text: "Next",
+<<<<<<< HEAD
                 onPressed: () 
                 // {
                 //   Navigator.pushNamed(context, AppRoutes.home);
                 // },
                  => _onNext(context),
+=======
+                onPressed: () => _onNext(context),
+>>>>>>> e9d8737 (Update UI flow and fix login routing)
               ),
+
 
               SizedBox(height: size.height * 0.05),
 

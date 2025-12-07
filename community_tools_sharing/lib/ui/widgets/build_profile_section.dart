@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:community_tools_sharing/ui/models/profile_section_model.dart';
+import 'package:community_tools_sharing/ui/screens/home/browse_screen.dart';
+import 'package:community_tools_sharing/ui/screens/home/booking_screen.dart';
+import 'package:community_tools_sharing/ui/screens/notification_screen.dart';
+import 'package:community_tools_sharing/ui/screens/auth/sign_in_screen.dart';
+
+
 
 class BuildProfileSection extends StatelessWidget {
   const BuildProfileSection({
@@ -14,9 +22,47 @@ class BuildProfileSection extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return InkWell(
-      onTap: () {
-        // TODO: Handle navigation for each section
-      },
+      onTap: () async {
+  switch (profileSectionModel.headTitle) {
+    case 'My Tools':
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const BrowseScreen()),
+      );
+      break;
+
+    case 'My Bookings':
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const BookingScreen()),
+      );
+      break;
+
+    case 'Reviews':
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => NotificationScreen()),
+      );
+      break;
+
+    case 'Settings':
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Settings coming soon')),
+      );
+      break;
+
+    case 'Logout':
+      await FirebaseAuth.instance.signOut();
+      if (!context.mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const SignInScreen()),
+      );
+      break;
+
+    default:
+  }
+},
       borderRadius: BorderRadius.circular(16),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -26,7 +72,7 @@ class BuildProfileSection extends StatelessWidget {
           boxShadow: [
             if (!isDark)
               BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
+                color: Colors.grey.withValues(alpha: 0.1),
                 blurRadius: 6,
                 offset: const Offset(0, 2),
               ),
